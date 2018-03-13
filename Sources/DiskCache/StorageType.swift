@@ -1,6 +1,6 @@
 //
 //  StorageType.swift
-//  LocalCache
+//  DiskCache
 //
 //  Created by Jeremy Greenwood on 3/13/18.
 //

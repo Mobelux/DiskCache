@@ -1,12 +1,12 @@
 import XCTest
-@testable import LocalCache
+@testable import DiskCache
 
-class LocalCacheTests: XCTestCase {
+class DiskCacheTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(LocalCache().text, "Hello, World!")
+        XCTAssertEqual(DiskCache().text, "Hello, World!")
     }
 
 

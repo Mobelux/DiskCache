@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "LocalCache::LocalCache"
-               BuildableName = "LocalCache.framework"
-               BlueprintName = "LocalCache"
-               ReferencedContainer = "container:LocalCache.xcodeproj">
+               BlueprintIdentifier = "DiskCache::DiskCache"
+               BuildableName = "DiskCache.framework"
+               BlueprintName = "DiskCache"
+               ReferencedContainer = "container:DiskCache.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,10 +33,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "LocalCache::LocalCacheTests"
-               BuildableName = "LocalCacheTests.xctest"
-               BlueprintName = "LocalCacheTests"
-               ReferencedContainer = "container:LocalCache.xcodeproj">
+               BlueprintIdentifier = "DiskCache::DiskCacheTests"
+               BuildableName = "DiskCacheTests.xctest"
+               BlueprintName = "DiskCacheTests"
+               ReferencedContainer = "container:DiskCache.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,10 +57,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "LocalCache::LocalCache"
-            BuildableName = "LocalCache.framework"
-            BlueprintName = "LocalCache"
-            ReferencedContainer = "container:LocalCache.xcodeproj">
+            BlueprintIdentifier = "DiskCache::DiskCache"
+            BuildableName = "DiskCache.framework"
+            BlueprintName = "DiskCache"
+            ReferencedContainer = "container:DiskCache.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>

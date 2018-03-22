@@ -66,7 +66,7 @@ private extension DiskCache {
             return nil
         }
 
-        let subDirectory = "com.applestone.cache"
+        let subDirectory = "com.mobelux.cache"
         return URL(fileURLWithPath: searchPath).appendingPathComponent(subDirectory)
     }
 

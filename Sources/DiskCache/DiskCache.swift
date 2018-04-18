@@ -66,8 +66,13 @@ private extension DiskCache {
             return nil
         }
 
-        let subDirectory = "com.mobelux.cache"
-        return URL(fileURLWithPath: searchPath).appendingPathComponent(subDirectory)
+        var directoryURL = URL(fileURLWithPath: searchPath).appendingPathComponent("com.mobelux.cache")
+
+        if let subDirectory = storageType.subDirectory {
+            directoryURL.appendPathComponent(subDirectory, isDirectory: true)
+        }
+
+        return directoryURL
     }
 
     func fileURL(_ filename: String) -> URL? {
@@ -82,6 +87,3 @@ private extension DiskCache {
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
     }
 }
-
-
-

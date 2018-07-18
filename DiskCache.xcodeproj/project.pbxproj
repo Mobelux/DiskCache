@@ -175,6 +175,7 @@
 				TargetAttributes = {
 					3FC59E13207263A5006AC234 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1000;
 					};
 					3FC59E1C207263A5006AC234 = {
 						CreatedOnToolsVersion = 9.3;

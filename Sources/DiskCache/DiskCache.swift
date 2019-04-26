@@ -12,44 +12,21 @@ import Foundation
 public class DiskCache: Cache {
     let storageType: StorageType
 
-    public required init(storageType: StorageType) {
+    public required init(storageType: StorageType) throws {
         self.storageType = storageType
-
-        // create the cache directory, opting not to make this initializer
-        // failable at this time
-        guard let url = directoryURL else {
-            return
-        }
-
-        do {
-            try createDirectory(url)
-        } catch {
-            print("\(#function) - \(error)")
-        }
+        try createDirectory(directoryURL)
     }
 
     public func cache(_ data: Data, key: String) throws {
-        guard let fileURL = fileURL(key) else {
-            return
-        }
-
-        try data.write(to: fileURL)
+        try data.write(to: fileURL(key))
     }
 
     public func data(_ key: String) throws -> Data? {
-        guard let fileURL = fileURL(key) else {
-            return nil
-        }
-
-        return try Data(contentsOf: fileURL)
+        return try Data(contentsOf: fileURL(key))
     }
 
     public func delete(_ key: String) throws {
-        guard let fileURL = fileURL(key) else {
-            return
-        }
-
-        try FileManager.default.removeItem(at: fileURL)
+        try FileManager.default.removeItem(at: fileURL(key))
     }
 }
 
@@ -61,9 +38,9 @@ private extension DiskCache {
         }
     }
 
-    var directoryURL: URL? {
+    var directoryURL: URL {
         guard let searchPath = NSSearchPathForDirectoriesInDomains(searchPath, .userDomainMask, true).first else {
-            return nil
+            fatalError("\(#function) Fatal: Cannot get user directory.")
         }
 
         var directoryURL = URL(fileURLWithPath: searchPath).appendingPathComponent("com.mobelux.cache")
@@ -75,11 +52,7 @@ private extension DiskCache {
         return directoryURL
     }
 
-    func fileURL(_ filename: String) -> URL? {
-        guard let directoryURL = directoryURL else {
-            return nil
-        }
-
+    func fileURL(_ filename: String) -> URL {
         return directoryURL.appendingPathComponent(filename)
     }
 

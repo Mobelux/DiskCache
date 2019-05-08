@@ -8,15 +8,15 @@
 import Foundation
 
 public enum StorageType {
-    case temporary(String?)
-    case permanent(String?)
+    case temporary(SubDirectory?)
+    case permanent(SubDirectory?)
 
     var subDirectory: String? {
         switch self {
         case .temporary(let subDirectory):
-            return subDirectory
+            return subDirectory?.value
         case .permanent(let subDirectory):
-            return subDirectory
+            return subDirectory?.value
         }
     }
 }

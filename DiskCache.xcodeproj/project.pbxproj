@@ -12,6 +12,7 @@
 		3F0C4B60207264080078C5C6 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0C4B56207264080078C5C6 /* Cache.swift */; };
 		3F0C4B61207264080078C5C6 /* StorageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0C4B57207264080078C5C6 /* StorageType.swift */; };
 		3F0C4B66207264F50078C5C6 /* DiskCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0C4B5D207264080078C5C6 /* DiskCacheTests.swift */; };
+		3F2F4D0522832D89009D23CC /* SubDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2F4D0422832D89009D23CC /* SubDirectory.swift */; };
 		3FC59E1E207263A5006AC234 /* DiskCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FC59E14207263A5006AC234 /* DiskCache.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,7 @@
 		3F0C4B5A207264080078C5C6 /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		3F0C4B5C207264080078C5C6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3F0C4B5D207264080078C5C6 /* DiskCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCacheTests.swift; sourceTree = "<group>"; };
+		3F2F4D0422832D89009D23CC /* SubDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubDirectory.swift; sourceTree = "<group>"; };
 		3FC59E14207263A5006AC234 /* DiskCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DiskCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FC59E1D207263A5006AC234 /* DiskCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiskCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 				3F0C4B56207264080078C5C6 /* Cache.swift */,
 				3F0C4B57207264080078C5C6 /* StorageType.swift */,
 				3F0C4B58207264080078C5C6 /* Info.plist */,
+				3F2F4D0422832D89009D23CC /* SubDirectory.swift */,
 			);
 			path = DiskCache;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2F4D0522832D89009D23CC /* SubDirectory.swift in Sources */,
 				3F0C4B61207264080078C5C6 /* StorageType.swift in Sources */,
 				3F0C4B60207264080078C5C6 /* Cache.swift in Sources */,
 				3F0C4B5F207264080078C5C6 /* DiskCache.swift in Sources */,

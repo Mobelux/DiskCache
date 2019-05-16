@@ -11,4 +11,5 @@ public protocol Cache {
     func cache(_ data: Data, key: String) throws
     func data(_ key: String) throws -> Data?
     func delete(_ key: String) throws
+    func deleteAll() throws
 }

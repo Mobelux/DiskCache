@@ -28,6 +28,11 @@ public class DiskCache: Cache {
     public func delete(_ key: String) throws {
         try FileManager.default.removeItem(at: fileURL(key))
     }
+
+    public func deleteAll() throws {
+        try FileManager.default.removeItem(at: directoryURL)
+        try createDirectory(directoryURL)
+    }
 }
 
 private extension DiskCache {

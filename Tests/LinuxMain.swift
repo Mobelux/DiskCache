@@ -1,6 +1,7 @@
 import XCTest
-@testable import LocalCacheTests
 
-XCTMain([
-    testCase(LocalCacheTests.allTests),
-])
+import DiskCacheTests
+
+var tests = [XCTestCaseEntry]()
+tests += DiskCacheTests.allTests()
+XCTMain(tests)

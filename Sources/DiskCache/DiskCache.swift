@@ -11,9 +11,11 @@ import Foundation
 /// all tasks on the current queue. Consumers should manage dispatching tasks to background queues if needed
 public class DiskCache: Cache {
     let storageType: StorageType
+    let appGroupID: String?
 
-    public required init(storageType: StorageType) throws {
+    public required init(storageType: StorageType, appGroupID: String? = nil) throws {
         self.storageType = storageType
+        self.appGroupID = appGroupID
         try createDirectory(directoryURL)
     }
 
@@ -44,11 +46,23 @@ private extension DiskCache {
     }
 
     var directoryURL: URL {
-        guard let searchPath = NSSearchPathForDirectoriesInDomains(searchPath, .userDomainMask, true).first else {
-            fatalError("\(#function) Fatal: Cannot get user directory.")
+        var basePath: String {
+            if let appGroupID = appGroupID {
+                guard let sharedPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?.path else {
+                    fatalError("\(#function) Fatal: Cannot get shared directory.")
+                }
+
+                return sharedPath
+            } else {
+                guard let searchPath = NSSearchPathForDirectoriesInDomains(searchPath, .userDomainMask, true).first else {
+                    fatalError("\(#function) Fatal: Cannot get user directory.")
+                }
+
+                return searchPath
+            }
         }
 
-        var directoryURL = URL(fileURLWithPath: searchPath).appendingPathComponent("com.mobelux.cache")
+        var directoryURL = URL(fileURLWithPath: basePath).appendingPathComponent("com.mobelux.cache")
 
         if let subDirectory = storageType.subDirectory {
             directoryURL.appendPathComponent(subDirectory, isDirectory: true)

@@ -12,4 +12,5 @@ public protocol Cache {
     func data(_ key: String) throws -> Data?
     func delete(_ key: String) throws
     func deleteAll() throws
+    public func fileURL(_ filename: String) -> URL
 }

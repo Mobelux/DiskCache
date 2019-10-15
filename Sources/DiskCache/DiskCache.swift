@@ -35,6 +35,10 @@ public class DiskCache: Cache {
         try FileManager.default.removeItem(at: directoryURL)
         try createDirectory(directoryURL)
     }
+
+    public func fileURL(_ filename: String) -> URL {
+        return directoryURL.appendingPathComponent(filename)
+    }
 }
 
 private extension DiskCache {
@@ -69,10 +73,6 @@ private extension DiskCache {
         }
 
         return directoryURL
-    }
-
-    func fileURL(_ filename: String) -> URL {
-        return directoryURL.appendingPathComponent(filename)
     }
 
     func createDirectory(_ url: URL) throws {

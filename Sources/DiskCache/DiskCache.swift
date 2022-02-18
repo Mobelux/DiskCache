@@ -9,8 +9,7 @@ import Foundation
 
 typealias VoidCheckedContinuation = CheckedContinuation<Void, Error>
 
-/// Provides interfaces for caching and retrieving data to/from disk. This implementation executes
-/// all tasks on the current queue. Consumers should manage dispatching tasks to background queues if needed
+/// Provides interfaces for caching and retrieving data to/from disk.
 public class DiskCache: Cache {
     lazy var queue = DispatchQueue.global()
     let storageType: StorageType
@@ -29,7 +28,7 @@ public class DiskCache: Cache {
                 return
             }
 
-            queue.async {
+            self.queue.async {
                 do {
                     try data.write(to: self.fileURL(key))
                     continuation.resume()

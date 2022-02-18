@@ -15,7 +15,7 @@ public enum StorageType {
     // stores data in user's `directory` directory
     case permanent(SubDirectory?)
     // stores data in shared container, which is suitable to share data between app, extenstions, etc
-    case shared(AppGroupID)
+    case shared(AppGroupID, SubDirectory?)
 
     var subDirectory: String? {
         switch self {
@@ -23,8 +23,8 @@ public enum StorageType {
             return subDirectory?.value
         case .permanent(let subDirectory):
             return subDirectory?.value
-        case .shared(let appGroupID):
-            return appGroupID
+        case let .shared(_, subDirectory):
+            return subDirectory?.value
         }
     }
 }

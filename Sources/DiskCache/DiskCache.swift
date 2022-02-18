@@ -97,7 +97,7 @@ public class DiskCache: Cache {
     }
 }
 
-private extension DiskCache {
+extension DiskCache {
     var searchPathDirectory: FileManager.SearchPathDirectory? {
         switch storageType {
         case .temporary: return .cachesDirectory
@@ -118,7 +118,7 @@ private extension DiskCache {
 
                 return searchPath
 
-            case .shared(let appGroupID):
+            case let .shared(appGroupID, _):
                 guard let sharedPath = FileManager.default
                         .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
                 else {

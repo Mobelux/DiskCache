@@ -20,7 +20,7 @@ public class DiskCache: Cache {
     }
 
     public func cache(_ data: Data, key: String) async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
             guard let self = self else {
                 return
             }
@@ -37,7 +37,7 @@ public class DiskCache: Cache {
     }
 
     public func data(_ key: String) async throws -> Data {
-        try await withCheckedThrowingContinuation { [weak self] continuation in
+        try await withUnsafeThrowingContinuation { [weak self] continuation in
             guard let self = self else {
                 return
             }
@@ -54,7 +54,7 @@ public class DiskCache: Cache {
     }
 
     public func delete(_ key: String) async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
             guard let self = self else {
                 return
             }
@@ -71,7 +71,7 @@ public class DiskCache: Cache {
     }
 
     public func deleteAll() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
             guard let self = self else {
                 return
             }

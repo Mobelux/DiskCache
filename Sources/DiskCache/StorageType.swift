@@ -7,9 +7,15 @@
 
 import Foundation
 
+public typealias AppGroupID = String
+
 public enum StorageType {
+    // stores data in user's `caches` directory, which is volatile
     case temporary(SubDirectory?)
+    // stores data in user's `directory` directory
     case permanent(SubDirectory?)
+    // stores data in shared container, which is suitable to share data between app, extenstions, etc
+    case shared(AppGroupID)
 
     var subDirectory: String? {
         switch self {
@@ -17,6 +23,8 @@ public enum StorageType {
             return subDirectory?.value
         case .permanent(let subDirectory):
             return subDirectory?.value
+        case .shared(let appGroupID):
+            return appGroupID
         }
     }
 }

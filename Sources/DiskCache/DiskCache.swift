@@ -13,11 +13,9 @@ typealias VoidCheckedContinuation = CheckedContinuation<Void, Error>
 public class DiskCache: Cache {
     lazy var queue = DispatchQueue.global()
     let storageType: StorageType
-    let appGroupID: String?
 
-    public required init(storageType: StorageType, appGroupID: String? = nil) throws {
+    public required init(storageType: StorageType) throws {
         self.storageType = storageType
-        self.appGroupID = appGroupID
         try createDirectory(directoryURL)
     }
 
@@ -100,31 +98,38 @@ public class DiskCache: Cache {
 }
 
 private extension DiskCache {
-    var searchPath: FileManager.SearchPathDirectory {
+    var searchPathDirectory: FileManager.SearchPathDirectory? {
         switch storageType {
         case .temporary: return .cachesDirectory
         case .permanent: return .documentDirectory
+        case .shared: return nil
         }
     }
 
     var directoryURL: URL {
-        var basePath: String {
-            if let appGroupID = appGroupID {
-                guard let sharedPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?.path else {
+        var basePath: URL {
+            switch storageType {
+            case .temporary, .permanent:
+                guard let searchPathDirectory = searchPathDirectory,
+                      let searchPath = FileManager.default.urls(for: searchPathDirectory,in: .userDomainMask)
+                        .first else {
+                            fatalError("\(#function) Fatal: Cannot get user directory.")
+                        }
+
+                return searchPath
+
+            case .shared(let appGroupID):
+                guard let sharedPath = FileManager.default
+                        .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+                else {
                     fatalError("\(#function) Fatal: Cannot get shared directory.")
                 }
 
                 return sharedPath
-            } else {
-                guard let searchPath = NSSearchPathForDirectoriesInDomains(searchPath, .userDomainMask, true).first else {
-                    fatalError("\(#function) Fatal: Cannot get user directory.")
-                }
-
-                return searchPath
             }
         }
 
-        var directoryURL = URL(fileURLWithPath: basePath).appendingPathComponent("com.mobelux.cache")
+        var directoryURL = basePath.appendingPathComponent("com.mobelux.cache")
 
         if let subDirectory = storageType.subDirectory {
             directoryURL.appendPathComponent(subDirectory, isDirectory: true)
@@ -134,6 +139,10 @@ private extension DiskCache {
     }
 
     func createDirectory(_ url: URL) throws {
-        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default
+            .createDirectory(
+                at: url,
+                withIntermediateDirectories: true,
+                attributes: nil)
     }
 }

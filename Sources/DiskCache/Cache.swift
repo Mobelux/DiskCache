@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol Cache {
-    func cache(_ data: Data, key: String) throws
-    func data(_ key: String) throws -> Data?
-    func delete(_ key: String) throws
-    func deleteAll() throws
+    func cache(_ data: Data, key: String) async throws
+    func data(_ key: String) async throws -> Data?
+    func delete(_ key: String) async throws
+    func deleteAll() async throws
     func fileURL(_ filename: String) -> URL
 }

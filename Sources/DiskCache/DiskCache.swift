@@ -7,9 +7,12 @@
 
 import Foundation
 
+typealias VoidCheckedContinuation = CheckedContinuation<Void, Error>
+
 /// Provides interfaces for caching and retrieving data to/from disk. This implementation executes
 /// all tasks on the current queue. Consumers should manage dispatching tasks to background queues if needed
 public class DiskCache: Cache {
+    lazy var queue = DispatchQueue.global()
     let storageType: StorageType
     let appGroupID: String?
 
@@ -19,21 +22,77 @@ public class DiskCache: Cache {
         try createDirectory(directoryURL)
     }
 
-    public func cache(_ data: Data, key: String) throws {
-        try data.write(to: fileURL(key))
+    public func cache(_ data: Data, key: String) async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+            guard let self = self else {
+                continuation.resume()
+                return
+            }
+
+            queue.async {
+                do {
+                    try data.write(to: self.fileURL(key))
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
-    public func data(_ key: String) throws -> Data? {
-        return try Data(contentsOf: fileURL(key))
+    public func data(_ key: String) async throws -> Data? {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else {
+                continuation.resume(returning: nil)
+                return
+            }
+
+            self.queue.async {
+                do {
+                    let data = try Data(contentsOf: self.fileURL(key))
+                    continuation.resume(returning: data)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
-    public func delete(_ key: String) throws {
-        try FileManager.default.removeItem(at: fileURL(key))
+    public func delete(_ key: String) async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+            guard let self = self else {
+                continuation.resume()
+                return
+            }
+
+            self.queue.async {
+                do {
+                    try FileManager.default.removeItem(at: self.fileURL(key))
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
-    public func deleteAll() throws {
-        try FileManager.default.removeItem(at: directoryURL)
-        try createDirectory(directoryURL)
+    public func deleteAll() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+            guard let self = self else {
+                continuation.resume()
+                return
+            }
+
+            self.queue.async {
+                do {
+                    try FileManager.default.removeItem(at: self.directoryURL)
+                    try self.createDirectory(self.directoryURL)
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     public func fileURL(_ filename: String) -> URL {

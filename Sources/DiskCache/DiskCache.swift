@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias VoidCheckedContinuation = CheckedContinuation<Void, Error>
+typealias VoidUnsafeContinuation = UnsafeContinuation<Void, Error>
 
 /// Provides interfaces for caching and retrieving data to/from disk.
 public class DiskCache: Cache {
@@ -20,7 +20,7 @@ public class DiskCache: Cache {
     }
 
     public func cache(_ data: Data, key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
             guard let self = self else {
                 return
             }
@@ -54,7 +54,7 @@ public class DiskCache: Cache {
     }
 
     public func delete(_ key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
             guard let self = self else {
                 return
             }
@@ -71,7 +71,7 @@ public class DiskCache: Cache {
     }
 
     public func deleteAll() async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidCheckedContinuation) -> Void in
+        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
             guard let self = self else {
                 return
             }

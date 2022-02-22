@@ -11,7 +11,6 @@ typealias VoidUnsafeContinuation = UnsafeContinuation<Void, Error>
 
 /// Provides interfaces for caching and retrieving data to/from disk.
 public class DiskCache: Cache {
-    lazy var queue = DispatchQueue.global()
     let storageType: StorageType
 
     public required init(storageType: StorageType) throws {
@@ -20,70 +19,46 @@ public class DiskCache: Cache {
     }
 
     public func cache(_ data: Data, key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try data.write(to: self.fileURL(key))
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation {(continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try data.write(to: fileURL(key))
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
     public func data(_ key: String) async throws -> Data {
-        try await withUnsafeThrowingContinuation { [weak self] continuation in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    let data = try Data(contentsOf: self.fileURL(key))
-                    continuation.resume(returning: data)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { continuation in
+            do {
+                let data = try Data(contentsOf: fileURL(key))
+                continuation.resume(returning: data)
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
     public func delete(_ key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try FileManager.default.removeItem(at: self.fileURL(key))
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try FileManager.default.removeItem(at: fileURL(key))
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
     public func deleteAll() async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try FileManager.default.removeItem(at: self.directoryURL)
-                    try self.createDirectory(self.directoryURL)
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try FileManager.default.removeItem(at: directoryURL)
+                try createDirectory(directoryURL)
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }

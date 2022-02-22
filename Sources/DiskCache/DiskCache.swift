@@ -20,7 +20,7 @@ public class DiskCache: Cache {
         try createDirectory(directoryURL)
     }
 
-    /// Asycronously writes `data` to disk.
+    /// Asynchronously writes `data` to disk.
     /// - Parameters:
     ///   - data: The data to write to disk
     ///   - key: A unique key used to identify `data`.
@@ -35,7 +35,7 @@ public class DiskCache: Cache {
         }
     }
 
-    /// Asycronously get data from the cache. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// Asynchronously get data from the cache. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
     /// - Parameter key: A unique key used to identify `data`.
     /// - Returns: An instance of Data which was previously stored on disk.
     public func data(_ key: String) async throws -> Data {
@@ -49,7 +49,7 @@ public class DiskCache: Cache {
         }
     }
 
-    /// Asycronously deletes cached data. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// Asynchronously deletes cached data. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
     /// - Parameter key: A unique key used to identify `data`.
     public func delete(_ key: String) async throws {
         try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in

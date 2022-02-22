@@ -11,85 +11,75 @@ typealias VoidUnsafeContinuation = UnsafeContinuation<Void, Error>
 
 /// Provides interfaces for caching and retrieving data to/from disk.
 public class DiskCache: Cache {
-    lazy var queue = DispatchQueue.global()
     let storageType: StorageType
 
+    /// Intializes a new instance of `DiskCache`. The path to the cache is created if not already presents. Throws if path cannot be created for some reason.
+    /// - Parameter storageType: The type of storage (on disk) the cache uses. This influences where the cache will be created.
     public required init(storageType: StorageType) throws {
         self.storageType = storageType
         try createDirectory(directoryURL)
     }
 
+    /// Asynchronously writes `data` to disk.
+    /// - Parameters:
+    ///   - data: The data to write to disk
+    ///   - key: A unique key used to identify `data`.
     public func cache(_ data: Data, key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try data.write(to: self.fileURL(key))
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation {(continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try data.write(to: fileURL(key))
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
+    /// Asynchronously get data from the cache. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// - Parameter key: A unique key used to identify `data`.
+    /// - Returns: An instance of Data which was previously stored on disk.
     public func data(_ key: String) async throws -> Data {
-        try await withUnsafeThrowingContinuation { [weak self] continuation in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    let data = try Data(contentsOf: self.fileURL(key))
-                    continuation.resume(returning: data)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { continuation in
+            do {
+                let data = try Data(contentsOf: fileURL(key))
+                continuation.resume(returning: data)
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
+    /// Asynchronously deletes cached data. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// - Parameter key: A unique key used to identify `data`.
     public func delete(_ key: String) async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try FileManager.default.removeItem(at: self.fileURL(key))
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try FileManager.default.removeItem(at: fileURL(key))
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
+    /// Deletes the cache directory and all or its contents, then recreates the cache directory.
     public func deleteAll() async throws {
-        try await withUnsafeThrowingContinuation { [weak self] (continuation: VoidUnsafeContinuation) -> Void in
-            guard let self = self else {
-                return
-            }
-
-            self.queue.async {
-                do {
-                    try FileManager.default.removeItem(at: self.directoryURL)
-                    try self.createDirectory(self.directoryURL)
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+        try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
+            do {
+                try FileManager.default.removeItem(at: directoryURL)
+                try createDirectory(directoryURL)
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
     }
 
-    public func fileURL(_ filename: String) -> URL {
-        return directoryURL.appendingPathComponent(filename)
+    /// Constructs the full file url for the given key. Useful for determiniing if a something is cached for the key.
+    /// - Parameter key: A unique key used to identify `data`.
+    /// - Returns: The file url for a cached it, based on `storageType`
+    public func fileURL(_ key: String) -> URL {
+        return directoryURL.appendingPathComponent(key)
     }
 }
 

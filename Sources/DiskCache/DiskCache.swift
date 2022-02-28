@@ -20,14 +20,18 @@ public class DiskCache: Cache {
         try createDirectory(directoryURL)
     }
 
+}
+
+// MARK: - Asynchronous Methods
+public extension DiskCache {
     /// Asynchronously writes `data` to disk.
     /// - Parameters:
     ///   - data: The data to write to disk
     ///   - key: A unique key used to identify `data`.
-    public func cache(_ data: Data, key: String) async throws {
+    func cache(_ data: Data, key: String) async throws {
         try await withUnsafeThrowingContinuation {(continuation: VoidUnsafeContinuation) -> Void in
             do {
-                try data.write(to: fileURL(key))
+                try syncCache(data, key: key)
                 continuation.resume()
             } catch {
                 continuation.resume(throwing: error)
@@ -38,10 +42,10 @@ public class DiskCache: Cache {
     /// Asynchronously get data from the cache. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
     /// - Parameter key: A unique key used to identify `data`.
     /// - Returns: An instance of Data which was previously stored on disk.
-    public func data(_ key: String) async throws -> Data {
+    func data(_ key: String) async throws -> Data {
         try await withUnsafeThrowingContinuation { continuation in
             do {
-                let data = try Data(contentsOf: fileURL(key))
+                let data = try syncData(key)
                 continuation.resume(returning: data)
             } catch {
                 continuation.resume(throwing: error)
@@ -51,10 +55,10 @@ public class DiskCache: Cache {
 
     /// Asynchronously deletes cached data. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
     /// - Parameter key: A unique key used to identify `data`.
-    public func delete(_ key: String) async throws {
+    func delete(_ key: String) async throws {
         try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
             do {
-                try FileManager.default.removeItem(at: fileURL(key))
+                try syncDelete(key)
                 continuation.resume()
             } catch {
                 continuation.resume(throwing: error)
@@ -63,11 +67,10 @@ public class DiskCache: Cache {
     }
 
     /// Deletes the cache directory and all or its contents, then recreates the cache directory.
-    public func deleteAll() async throws {
+    func deleteAll() async throws {
         try await withUnsafeThrowingContinuation { (continuation: VoidUnsafeContinuation) -> Void in
             do {
-                try FileManager.default.removeItem(at: directoryURL)
-                try createDirectory(directoryURL)
+                try syncDeleteAll()
                 continuation.resume()
             } catch {
                 continuation.resume(throwing: error)
@@ -78,8 +81,38 @@ public class DiskCache: Cache {
     /// Constructs the full file url for the given key. Useful for determiniing if a something is cached for the key.
     /// - Parameter key: A unique key used to identify `data`.
     /// - Returns: The file url for a cached it, based on `storageType`
-    public func fileURL(_ key: String) -> URL {
+    func fileURL(_ key: String) -> URL {
         return directoryURL.appendingPathComponent(key)
+    }
+}
+
+// MARK: - Synchronous Methods
+public extension DiskCache {
+    /// Synchronously writes `data` to disk.
+    /// - Parameters:
+    ///   - data: The data to write to disk
+    ///   - key: A unique key used to identify `data`
+    func syncCache(_ data: Data, key: String) throws {
+        try data.write(to: fileURL(key))
+    }
+
+    /// Synchronously get data from the cache. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// - Parameter key: A unique key used to identify `data`.
+    /// - Returns: An instance of Data which was previously stored on disk.
+    func syncData(_ key: String) throws -> Data {
+        try Data(contentsOf: fileURL(key))
+    }
+
+    /// Synchronously deletes cached data. If data does not exist for `key`, an error with code `NSFileReadNoSuchFileError` will be thrown.
+    /// - Parameter key: A unique key used to identify `data`.
+    func syncDelete(_ key: String) throws {
+        try FileManager.default.removeItem(at: fileURL(key))
+    }
+
+    /// Deletes the cache directory and all or its contents, then recreates the cache directory.
+    func syncDeleteAll() throws {
+        try FileManager.default.removeItem(at: directoryURL)
+        try createDirectory(directoryURL)
     }
 }
 

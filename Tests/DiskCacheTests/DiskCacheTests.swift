@@ -21,7 +21,7 @@ final class DiskCacheTests: XCTestCase {
     }
 
     func testSharedStoragePath() throws {
-        let cache = try DiskCache(storageType: .shared("app-group-id", .custom("shared")))
+        let cache = try DiskCache(storageType: .shared("app-group-id", subDirectory: .custom("shared")))
         let pathCompnents = cache.directoryURL.pathComponents
 
         XCTAssertEqual(pathCompnents.suffix(4), ["Group Containers", "app-group-id", "com.mobelux.cache", "shared"])

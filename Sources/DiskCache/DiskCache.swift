@@ -26,7 +26,7 @@ public class DiskCache: Cache {
 public extension DiskCache {
     /// Asynchronously writes `data` to disk.
     /// - Parameters:
-    ///   - data: The data to write to disk
+    ///   - data: The data to write to disk.
     ///   - key: A unique key used to identify `data`.
     func cache(_ data: Data, key: String) async throws {
         try await withUnsafeThrowingContinuation {(continuation: VoidUnsafeContinuation) -> Void in
@@ -80,7 +80,7 @@ public extension DiskCache {
 
     /// Constructs the full file url for the given key. Useful for determiniing if a something is cached for the key.
     /// - Parameter key: A unique key used to identify `data`.
-    /// - Returns: The file url for a cached it, based on `storageType`
+    /// - Returns: The file url for a cached it, based on `storageType`.
     func fileURL(_ key: String) -> URL {
         return directoryURL.appendingPathComponent(key)
     }
@@ -90,8 +90,8 @@ public extension DiskCache {
 public extension DiskCache {
     /// Synchronously writes `data` to disk.
     /// - Parameters:
-    ///   - data: The data to write to disk
-    ///   - key: A unique key used to identify `data`
+    ///   - data: The data to write to disk.
+    ///   - key: A unique key used to identify `data`.
     func syncCache(_ data: Data, key: String) throws {
         try data.write(to: fileURL(key))
     }

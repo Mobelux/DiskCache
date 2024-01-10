@@ -1,0 +1,21 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: Type of release
+        type: choice
+        required: true
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  test:
+    name: Test
+    uses:
+
+  release:
+    name: Release
+    uses:

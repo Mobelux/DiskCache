@@ -10,7 +10,7 @@ import Foundation
 typealias VoidUnsafeContinuation = UnsafeContinuation<Void, Error>
 
 /// Provides interfaces for caching and retrieving data to/from disk.
-public class DiskCache: Cache {
+public final class DiskCache: Cache {
     let storageType: StorageType
 
     /// Intializes a new instance of `DiskCache`. The path to the cache is created if not already presents. Throws if path cannot be created for some reason.

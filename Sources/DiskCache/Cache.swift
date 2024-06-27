@@ -8,7 +8,7 @@
 import Foundation
 
 /// A class of types providing interfaces for caching and retrieving data to/from disk.
-public protocol Cache {
+public protocol Cache: Sendable {
 
     /// Synchronously writes `data` to disk.
     /// - Parameters:

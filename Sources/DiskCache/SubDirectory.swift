@@ -9,7 +9,7 @@
 import Foundation
 
 /// A subdirectory of a ``StorageType`` where data is stored.
-public enum SubDirectory {
+public enum SubDirectory: Sendable {
     /// An `images` subdirectory.
     case images
     /// A subdirectory with a custom name.

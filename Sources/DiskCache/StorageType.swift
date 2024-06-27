@@ -11,7 +11,7 @@ import Foundation
 public typealias AppGroupID = String
 
 /// A location where data may be stored.
-public enum StorageType {
+public enum StorageType: Sendable {
     /// Stores data in user's `caches` directory, which is volatile.
     case temporary(_ subDirectory: SubDirectory? = nil)
     /// Stores data in user's `directory` directory.

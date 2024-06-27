@@ -14,8 +14,57 @@ on:
 jobs:
   test:
     name: Test
-    uses:
+    uses: Mobelux/DiskCache/.github/workflows/test.yml@main
 
   release:
     name: Release
-    uses:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: write
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Get latest release version
+        id: get_current_version
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: { tag_name } } = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
+            return tag_name
+
+      - name: Bump version
+        id: bump
+        uses: Mobelux/bump-version-action@v1
+        with:
+          release-type: ${{ inputs.release_type }}
+          version: ${{ steps.get_current_version.outputs.result }}
+
+      - name: Push tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ steps.bump.outputs.version }}',
+              sha: context.sha
+            })
+
+      - name: Create release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ steps.bump.outputs.version }}',
+              generate_release_notes: true,
+              draft: false,
+              prerelease: false
+            })
+

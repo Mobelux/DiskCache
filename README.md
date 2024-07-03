@@ -1,6 +1,6 @@
 # DiskCache
 
-DiskCache is lightweight caching libary intended to persist arbitrary data to disk. 
+DiskCache is lightweight caching libary intended to persist arbitrary data to disk.
 
 ## 📱 Requirements
 
@@ -26,9 +26,9 @@ let cache = try DiskCache(storageType: .temporary(nil))
 
 There are three storage type options, which inherently define the root directory where the cache resides:
 
-`temporary` - Stores data in the user's `Cache` directory. This directory is subject to the system's normal cache purging rules. Data stored here should be assumed to be ephemeral and could be purged by the system at any time.
-`permanent` - Stores data in the user's `Documents` directory. This will not be intentionally purged by the system and is safe to store long(er) term data.
-`shared` - Stores data in the app's shared container with the given `appGroupID`. This type is great for sharing data between app and extension or sibling apps.
+- `temporary` - Stores data in the user's `Cache` directory. This directory is subject to the system's normal cache purging rules. Data stored here should be assumed to be ephemeral and could be purged by the system at any time.
+- `permanent` - Stores data in the user's `Documents` directory. This will not be intentionally purged by the system and is safe to store long(er) term data.
+- `shared` - Stores data in the app's shared container with the given `appGroupID`. This type is great for sharing data between app and extension or sibling apps.
 
 ### Cache data:
 
